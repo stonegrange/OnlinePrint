@@ -1,0 +1,56 @@
+
+canvas_data:
+    #sizes are in inches
+  - id: 5x7
+    dimension_1: 5
+    dimension_2: 7
+    dpi: 300
+  - id: 8x10
+    dimension_1: 8
+    dimension_2: 10
+    dpi: 300
+  - id: 9x12
+    dimension_1: 9
+    dimension_2: 12
+    dpi: 300
+  - id: 11x14
+    dimension_1: 11
+    dimension_2: 14
+    dpi: 300
+  - id: 16x20
+    dimension_1: 16
+    dimension_2: 20
+    dpi: 300
+  - id: 18x24
+    dimension_1: 18
+    dimension_2: 24
+    dpi: 300
+  - id: 24x36
+    dimension_1: 24
+    dimension_2: 36
+    dpi: 300
+    dimension_2: 36
+    dpi: 300
+  - id: A2
+    dimension_1: 16.5
+    dimension_2: 23.4
+    dpi: 300
+
+#The image quality, on a scale from 0 (worst) to 95 (best) The default is 75. Values above 95 should be avoided; 100 disables portions of the JPEG compression algorithm, and results in large files with hardly any gain in image quality.
+
+extensions:
+  jpg:
+    quality: 95
+    subsampling: 95
+  jpeg:
+    quality: 95
+    subsampling: 95
+  png:
+    compress_level: 0
+  gif:
+    save_all: True
+  tiff:
+    save_all: True
+    quality: 95
+
+file_path_public_domain: "F:/D drive/Pictures/ETSY/PUBLIC DOMAIN/TEST"
