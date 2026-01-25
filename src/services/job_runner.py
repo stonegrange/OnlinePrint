@@ -1,4 +1,4 @@
-from config.config_loader import get_canvas_data
+from config.config_loader import ConfigLoader
 from core.create_folders import make_output_structure
 from core.crop_task import Canvas
 
@@ -14,9 +14,10 @@ def run_job(input_dir, output_dir, selected_dimensions):
         output_dir (str): Path to the output directory for processed images.
         selected_dimensions (list): List of selected canvas dimension IDs to process.
     """
-    config = get_canvas_data()
+    config = ConfigLoader.initialise_config_loader()
+    canvas_data = config.get_canvas_data()
     make_output_structure(input_dir, output_dir)
-    for size in config:
+    for size in canvas_data:
         id = size["id"]
         dpi = size["dpi"]
         dimension_1 = size["dimension_1"]

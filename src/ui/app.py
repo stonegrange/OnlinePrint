@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
-from config.config_loader import get_canvas_data
+from config.config_loader import ConfigLoader
 from services.job_runner import run_job
 
 class OnlinePrintUI:
@@ -17,6 +17,8 @@ class OnlinePrintUI:
         self.output_path_var = StringVar()
         self.checked_dimensions = []
 
+        self.config = ConfigLoader.initialise_config_loader()
+        self.canvas_data = self.config.get_canvas_data()
         self.build_ui()
 
     def build_ui(self):
@@ -61,8 +63,7 @@ class OnlinePrintUI:
         self.vars_by_name = {}
         column = 3
         row = 0
-        canvas_data = get_canvas_data()
-        for size in canvas_data:
+        for size in self.canvas_data:
             name = size["id"]
             var = BooleanVar()
             self.vars_by_name[name] = var
