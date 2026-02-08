@@ -93,22 +93,30 @@ sizes:
     width_in: 8
     height_in: 10
 
-    label → Displayed in the UI
+extensions:
+  jpg:
+    quality: 95
+    subsampling: 95
+  jpeg:
+    quality: 95
+    subsampling: 95
+  png:
+    compress_level: 0
+  gif:
+    save_all: True
+  tiff:
+    save_all: True
+    quality: 95
+```
 
-    id → Used for filenames
+## Installation Requirements
+```
+Python 3.9+
 
-    dpi → Applied globally
-
-Add or remove sizes without touching Python code.
-Installation
-Requirements
-
-    Python 3.9+
-
-    Pip
-
-Install dependencies
-
+Pip
+```
+## Install dependencies
+```
 pip install -r requirements.txt
 
 Running the App
@@ -116,23 +124,4 @@ Running the App
 From the project root:
 
 python main.py
-
-Design Philosophy
-
-    UI owns widgets, not logic
-
-    Logic never imports UI
-
-    All data is passed explicitly
-
-    No global state
-
-    No circular imports
-
-This makes the project:
-
-    Easy to maintain
-
-    Easy to test
-
-    Easy to extend (threading, progress bars, CLI mode, etc.)
+```
