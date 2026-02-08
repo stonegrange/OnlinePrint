@@ -1,8 +1,9 @@
+import threading
 from tkinter import *
-from tkinter import messagebox
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 from config.config_loader import ConfigLoader
 from services.job_runner import run_job
+ 
 
 class OnlinePrintUI:
     def __init__(self):
@@ -36,6 +37,7 @@ class OnlinePrintUI:
         self.input_file_path_label.grid(row=1, column=0)
         self.output_file_path_label = Label(text="Output File Path:")
         self.output_file_path_label.grid(row=2, column=0)
+        
 
         #Entries
         self.input_file_path_label = Entry(textvariable=self.input_path_var, width=50)
@@ -51,7 +53,10 @@ class OnlinePrintUI:
         self.output_file_path_add_button = Button(text="Browse...", width=10, command=self.add_output_file_path)
         self.output_file_path_add_button.grid(row=2, column=4)
 
+        self.status_var = StringVar(value="Idle")
+
         self.initialise_checkbuttons()
+
 
     #checkbuttons
     def initialise_checkbuttons(self):
@@ -126,17 +131,44 @@ class OnlinePrintUI:
 
         self.window.destroy()
 
-    def start(self):
+    def run_background_job(self):
         """
         Starts the image processing job.
         
         Calls run_job with the input path, output path, and selected dimensions.
         """
-        run_job(
-            self.input_file_path_label.get(),
-            self.output_file_path_label.get(),
-            self.checked_dimensions
-        )
+        try:
+            run_job(
+                self.input_file_path_label.get(),
+                self.output_file_path_label.get(),
+                self.checked_dimensions
+            )
+            self.root.after(0, self.on_job_finished)
+
+        except Exception as e:
+            self.root.after(0, self.on_job_failed, e)
+
+
+    def on_job_finished(self):
+        self.go_button.config(state="normal")
+        self.status_var.set("Done ✔")
+        messagebox.showinfo(title="Success", message="threading completed successfully.")
+
+    def on_job_failed(self, error):
+        self.go_button.config(state="normal")
+        self.status_var.set(f"Error: {error}")
+    
+    def start(self):
+        """
+        Starts the background job for image processing.
+        
+        Disables the start button and updates the status to indicate processing has started.
+        Runs the job in a separate thread to keep the UI responsive.
+        """
+        self.go_button.config(state="disabled")
+        self.status_var.set("Processing...")
+        worker = threading.Thread(target=self.run_background_job, daemon=True)
+        worker.start()
 
     def run(self):
         """
