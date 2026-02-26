@@ -28,7 +28,7 @@ Built with **Python**, **Tkinter**, **Pillow**, and **YAML**.
 ---
 
 ## Project Structure
-
+```
 photo_cropper/
 │
 ├─ main.py # Application entry point
@@ -45,33 +45,35 @@ photo_cropper/
 │ └─ sizes.yaml # Print size definitions
 │
 └─ requirements.txt
-
+```
 
 ---
 
 ## Output Folder Structure
 
 For an input image:
-
+```
 input/
 └─ example.jpg
-
+```
 
 The output will be:
-
+```
 output/
 └─ example/
 ├─ example.jpg
 └─ MockUps/
-├─ example_5x7.jpg
-├─ example_8x10.jpg
+├─ Pictures/
+| ├─ example_5x7.jpg
+| └─ example_8x10.jpg
 └─ ...
-
+```
 
 Each image gets:
 - Its own folder
 - A copy of the original image
-- A `MockUps/` folder containing cropped versions
+- A `Pixtures/` folder containing cropped versions
+- A `Mockups/` folder containing a 5x7 cropped version of the image and the mockup images
 
 ---
 
