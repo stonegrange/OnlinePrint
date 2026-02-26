@@ -73,8 +73,6 @@ class OnlinePrintUI:
             cb = Checkbutton(text=name, variable=var)
             cb.grid(row=row, column=column)
             column += 1
-        print(self.vars_by_name)
-        print(self.vars_by_name.keys())
 
     def add_input_file_path(self):
         """
