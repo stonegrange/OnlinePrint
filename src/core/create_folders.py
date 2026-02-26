@@ -6,14 +6,17 @@ IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".tif", ".tiff")
 
 def make_output_structure(input_dir, output_dir):
     """
-    Creates the output directory structure for processed images.
+    Create the directory structure for organizing processed images.
     
-    Sets up the main output directory and subdirectories for each image in the input directory.
-    Creates 'MockUps' and 'Pictures' subdirectories in each image folder and copies the original image.
+    Establishes the root output directory, then for each source image creates a dedicated
+    folder with 'Pictures' and 'MockUps' subdirectories. Copies the original image to its folder.
     
     Args:
-        input_dir (str): Path to the input directory containing images.
-        output_dir (str): Path to the output directory where structure will be created.
+        input_dir (str): Path to directory containing source images to process.
+        output_dir (str): Path to directory where the folder structure will be created.
+    
+    Raises:
+        OSError: If directory creation fails for reasons other than existing directories.
     """
     try:
         os.makedirs(output_dir)

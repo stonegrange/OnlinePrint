@@ -3,15 +3,13 @@ from tkinter import *
 from tkinter import filedialog, messagebox
 from config.config_loader import ConfigLoader
 from services.job_runner import run_job
- 
-
 class OnlinePrintUI:
     def __init__(self):
         """
-        Initializes the Online Print UI application.
+        Initialize the Online Print UI application.
         
-        Sets up the main window, variables for input/output paths, and checked dimensions list.
-        Calls build_ui to construct the interface.
+        Creates the main Tkinter window, initializes string variables for file paths,
+        loads configuration data for available canvas dimensions, and builds the user interface.
         """
         self.window = Tk()
         self.input_path_var = StringVar()
@@ -24,9 +22,10 @@ class OnlinePrintUI:
 
     def build_ui(self):
         """
-        Builds the user interface components.
+        Construct the complete user interface layout.
         
-        Sets up the window title, canvas, labels, entries, and buttons for input/output paths and start action.
+        Configures window properties, creates and places labels, text entry fields, 
+        browse buttons, and initializes checkbuttons for available canvas dimensions.
         """
         self.window.title("Online Print Editor")
         self.window.config(padx=50, pady=50)
@@ -37,7 +36,6 @@ class OnlinePrintUI:
         self.input_file_path_label.grid(row=1, column=0)
         self.output_file_path_label = Label(text="Output File Path:")
         self.output_file_path_label.grid(row=2, column=0)
-        
 
         #Entries
         self.input_file_path_label = Entry(textvariable=self.input_path_var, width=50)
@@ -57,13 +55,13 @@ class OnlinePrintUI:
 
         self.initialise_checkbuttons()
 
-
-    #checkbuttons
     def initialise_checkbuttons(self):
         """
-        Initializes the checkbuttons for canvas dimensions.
+        Create checkbox controls for each available canvas dimension.
         
-        Creates checkbuttons for each canvas size from the config, allowing users to select which dimensions to process.
+        Dynamically generates checkbutton widgets for all canvas sizes loaded from configuration,
+        allowing users to select which dimensions to apply during image processing
+
         """
         self.vars_by_name = {}
         column = 3
@@ -75,13 +73,13 @@ class OnlinePrintUI:
             cb = Checkbutton(text=name, variable=var)
             cb.grid(row=row, column=column)
             column += 1
+        print(self.vars_by_name)
+        print(self.vars_by_name.keys())
 
     def add_input_file_path(self):
         """
-        Opens a directory selection dialog for the input path.
+        Open a file browser dialog to select the input directory.
         
-        Allows the user to browse and select the input directory containing images to process.
-        Updates the input path entry field with the selected directory.
         """
         folder_path = filedialog.askdirectory()
         if folder_path:
@@ -90,26 +88,35 @@ class OnlinePrintUI:
 
     def add_output_file_path(self):
         """
-        Opens a directory selection dialog for the output path.
+        Open a file browser dialog to select the output directory.
         
-        Allows the user to browse and select the output directory where processed images will be saved.
-        Updates the output path entry field with the selected directory.
         """
         folder_path = filedialog.askdirectory()
         if folder_path:
             self.output_file_path_label.delete(0, END)
             self.output_file_path_label.insert(0, folder_path)
+    
+    def get_selected_dimensions(self):
+        selected = []
 
+        for canvas in self.canvas_data:
+            canvas_id = canvas["id"]
+            var = self.vars_by_name.get(canvas_id)
+
+            if canvas_id == "5x7" or (var and var.get()):
+                selected.append(canvas)
+
+        return selected
+    
     def process_data(self):
         """
-        Processes the user input and initiates the job.
+        Validate input parameters and begin the image processing workflow.
         
-        Validates input and output paths, collects selected dimensions, and calls the start method.
-        Displays success message and closes the window upon completion.
+        Checks that both input and output paths are provided and differ from each other,
+        collects selected canvas dimensions, and initiates the background processing job.
         """
         input_path = self.input_file_path_label.get()
         output_path = self.output_file_path_label.get()
-        checked_dimensions = []
         if not input_path or not output_path:
             messagebox.showinfo(title="Oops", message="Please make sure you have selected both input and output file paths.")
             return
@@ -117,52 +124,47 @@ class OnlinePrintUI:
             messagebox.showinfo(title="Oops", message="Input and output file paths cannot be the same.")
             return
 
-        for name, var in self.vars_by_name.items():
-            #always process 5x7 even if not checked to be used in the mockup generation to reduce file size
-            if var.get() or name == "5x7":
-                print(f"Processing dimension: {name}")
-                checked_dimensions.append(name)
-        
-        self.checked_dimensions = checked_dimensions
+        self.checked_dimensions = self.get_selected_dimensions()
 
         self.start()
 
-        messagebox.showinfo(title="Success", message="Processing completed successfully.")
-
-        self.window.destroy()
-
     def run_background_job(self):
         """
-        Starts the image processing job.
+        Execute the image processing job in the background thread.
         
-        Calls run_job with the input path, output path, and selected dimensions.
+        Retrieves current input/output paths and selected dimensions, then invokes the job runner.
+        Handles job completion or failure by scheduling appropriate UI callbacks.
         """
         try:
-            run_job(
-                self.input_file_path_label.get(),
-                self.output_file_path_label.get(),
-                self.checked_dimensions
-            )
-            self.root.after(0, self.on_job_finished)
+            input_path = self.input_file_path_label.get()
+            output_path = self.output_file_path_label.get()
+            selected_dimensions = list(self.checked_dimensions)
+
+            run_job(input_path, output_path, selected_dimensions)
+
+            self.window.after(0, self.on_job_finished)
 
         except Exception as e:
-            self.root.after(0, self.on_job_failed, e)
-
+            self.window.after(0, self.on_job_failed, e)
 
     def on_job_finished(self):
         self.go_button.config(state="normal")
-        self.status_var.set("Done ✔")
-        messagebox.showinfo(title="Success", message="threading completed successfully.")
+        self.status_var.set("Done")
+
+        messagebox.showinfo(title="Success", message="Processing completed successfully.")
+        self.window.destroy()
 
     def on_job_failed(self, error):
         self.go_button.config(state="normal")
         self.status_var.set(f"Error: {error}")
+        messagebox.showinfo(title="Error", message=f"An error occurred: {error}")
     
     def start(self):
         """
-        Starts the background job for image processing.
+        Launch the image processing job in a background thread.
         
-        Disables the start button and updates the status to indicate processing has started.
+        Disables user interaction during processing, updates status indicator, 
+        and spawns a daemon thread to perform cropping operations without blocking the UIe processing has started.
         Runs the job in a separate thread to keep the UI responsive.
         """
         self.go_button.config(state="disabled")
@@ -171,9 +173,4 @@ class OnlinePrintUI:
         worker.start()
 
     def run(self):
-        """
-        Runs the Tkinter main loop.
-        
-        Starts the GUI event loop to display the application window.
-        """
         self.window.mainloop()

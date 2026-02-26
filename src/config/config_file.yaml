@@ -29,8 +29,6 @@ canvas_data:
     dimension_1: 24
     dimension_2: 36
     dpi: 300
-    dimension_2: 36
-    dpi: 300
   - id: A2
     dimension_1: 16.5
     dimension_2: 23.4

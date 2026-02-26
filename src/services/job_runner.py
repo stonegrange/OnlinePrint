@@ -1,29 +1,25 @@
-from config.config_loader import ConfigLoader
 from core.create_folders import make_output_structure
 from core.crop_task import Canvas
 
 def run_job(input_dir, output_dir, selected_dimensions):
     """
-    Runs the image cropping job for selected canvas dimensions.
+    Orchestrate the image cropping and processing workflow.
     
-    Sets up the output structure and processes each selected canvas size by creating
-    a Canvas instance and calling crop_image to process all images in the input directory.
+    Sets up the output directory structure, retrieves canvas configuration for selected dimensions,
+    then processes all images by cropping and resizing them according to the specified canvas dimensions.
     
     Args:
-        input_dir (str): Path to the input directory containing images.
-        output_dir (str): Path to the output directory for processed images.
-        selected_dimensions (list): List of selected canvas dimension IDs to process.
+        input_dir (str): Path to directory containing source images.
+        output_dir (str): Path to directory where processed images will be organized.
+        selected_dimensions (list): List of canvas dimension dictionaries with 'id', 'dimension_1', 
+                                   'dimension_2', and 'dpi' properties.
     """
-    config = ConfigLoader.initialise_config_loader()
-    canvas_data = config.get_canvas_data()
     make_output_structure(input_dir, output_dir)
-    for size in canvas_data:
-        id = size["id"]
-        dpi = size["dpi"]
-        dimension_1 = size["dimension_1"]
-        dimension_2 = size["dimension_2"]
-        if id not in selected_dimensions:
-            continue
 
-        canvas = Canvas(id, dpi, dimension_1, dimension_2, input_dir, output_dir, selected_dimensions)
-        canvas.crop_image()
+    canvas = Canvas(
+        input_dir=input_dir,
+        output_dir=output_dir,
+        selected_dimensions=selected_dimensions
+    )
+
+    canvas.crop_images()
