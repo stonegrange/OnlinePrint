@@ -19,10 +19,8 @@ Built with **Python**, **Tkinter**, **Pillow**, and **YAML**.
 
 - 📂 Folder-based batch processing
 - 🖼 One output folder per image
-- 📁 Automatic `MockUps/` subfolder creation
-- 📐 Print sizes driven by YAML config (no hard-coding)
+- 📐 Print sizes driven by YAML config
 - 🧼 Clean separation of UI and logic
-- 🚫 No circular imports
 - ⚙ Uses standard libraries (`os`, `errno`, `shutil`, `sys`)
 
 ---
