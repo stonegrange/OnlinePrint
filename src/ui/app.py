@@ -93,7 +93,7 @@ class OnlinePrintUI:
         if folder_path:
             self.output_file_path_label.delete(0, END)
             self.output_file_path_label.insert(0, folder_path)
-    
+
     def get_selected_dimensions(self):
         selected = []
 
@@ -101,11 +101,12 @@ class OnlinePrintUI:
             canvas_id = canvas["id"]
             var = self.vars_by_name.get(canvas_id)
 
+            # Always process 5x7, for use in the mockups to reduce file size as it is the smallest element.
             if canvas_id == "5x7" or (var and var.get()):
                 selected.append(canvas)
 
         return selected
-    
+
     def process_data(self):
         """
         Validate input parameters and begin the image processing workflow.
@@ -136,7 +137,7 @@ class OnlinePrintUI:
         try:
             input_path = self.input_file_path_label.get()
             output_path = self.output_file_path_label.get()
-            selected_dimensions = list(self.checked_dimensions)
+            selected_dimensions = self.checked_dimensions
 
             run_job(input_path, output_path, selected_dimensions)
 
