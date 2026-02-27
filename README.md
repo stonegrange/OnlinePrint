@@ -70,7 +70,7 @@ output/
 Each image gets:
 - Its own folder
 - A copy of the original image
-- A `Pixtures/` folder containing cropped versions
+- A `Pictures/` folder containing cropped versions
 - A `Mockups/` folder containing a 5x7 cropped version of the image and the mockup images
 
 ---

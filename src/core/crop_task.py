@@ -3,12 +3,11 @@ import os
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".tif", ".tiff")
 
-class Canvas:
+class CanvasManager:
     """
-    Handles image cropping and resizing for specific canvas dimensions.
+    Handles image cropping and resizing for specific canvas dimensions. 
+    Whilst mainitaining aspect ratio preservation and DPI
     
-    This class takes a source directory of images and processes them according to 
-    selected canvas sizes, applying appropriate aspect ratio preservation and DPI-based scaling.
     """
     def __init__(self, input_dir, output_dir, selected_dimensions):
         """
@@ -43,6 +42,7 @@ class Canvas:
                 self.process_single_canvas(image_path=image_path,pictures_dir=pictures_dir,canvas=canvas)
 
     def process_single_canvas(self, image_path, pictures_dir, canvas):
+
         canvas_id = canvas["id"]
         d1 = canvas["dimension_1"]
         d2 = canvas["dimension_2"]
@@ -64,6 +64,7 @@ class Canvas:
             pixel_height = int(canvas_height * dpi)
             target_ratio = pixel_width / pixel_height
 
+            # If the source image is taller than the target aspect ratio, then crop top/bottom. Otherwise Crop left/right
             if ratio < target_ratio:
                 cropped_height = width / target_ratio
                 crop = (height - cropped_height) / 2

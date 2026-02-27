@@ -1,5 +1,5 @@
 from core.create_folders import make_output_structure
-from core.crop_task import Canvas
+from core.crop_task import CanvasManager
 
 def run_job(input_dir, output_dir, selected_dimensions):
     """
@@ -12,11 +12,11 @@ def run_job(input_dir, output_dir, selected_dimensions):
         input_dir (str): Path to directory containing source images.
         output_dir (str): Path to directory where processed images will be organized.
         selected_dimensions (list): List of canvas dimension dictionaries with 'id', 'dimension_1', 
-                                   'dimension_2', and 'dpi' properties.
+                                    'dimension_2', and 'dpi' properties.
     """
     make_output_structure(input_dir, output_dir)
 
-    canvas = Canvas(
+    canvas = CanvasManager(
         input_dir=input_dir,
         output_dir=output_dir,
         selected_dimensions=selected_dimensions
